@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>SecuriChat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
@@ -32,13 +32,17 @@
     <script>
       var socket = io();
       var crypt = new Crypt()
+
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+
+        var encryptchat = Crypt.AES.encrypt($('#m').val(), $('#encryption').val())
+        socket.emit('chat message', encryptchat);
         $('#m').val('');
         return false;
       });
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+        var decrypttext = Crypt.AES.decrypt(msg, $('#decryption').val())
+        $('#messages').append($('<li>').text(decrypttext));
       });
     </script>
   </body>
